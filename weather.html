@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="weather.css">
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="Enter city name" spellcheck="false">
+            <button>
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png">
+            </button>
+        </div>
+
+        <div class="weather">
+            <img src="" class="weather-icon">
+            <h1 class="temp">--°C</h1>
+            <h2 class="city">City</h2>
+
+            <div class="details">
+                <div class="col">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4148/4148460.png">
+                    <div>
+                        <p class="humidity">--%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png">
+                    <div>
+                        <p class="wind">-- km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "8e2a03303c17e732b930dafddc645978";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+        const searchBox = document.querySelector(".search input");
+        const searchBtn = document.querySelector(".search button");
+
+        async function checkWeather(city) {
+            try {
+                const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+                const data = await response.json();
+
+                if (data.cod !== 200) {
+                    alert("Error: " + data.message);
+                    return;
+                }
+
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+                // Dynamic weather icon
+                document.querySelector(".weather-icon").src =
+                    "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
+
+            } catch (error) {
+                console.log("Error:", error);
+            }
+        }
+
+        searchBtn.addEventListener("click", () => {
+            checkWeather(searchBox.value);
+        });
+
+        searchBox.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                checkWeather(searchBox.value);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
