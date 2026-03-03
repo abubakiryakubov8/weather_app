@@ -14,18 +14,18 @@
         <div class="search">
             <input type="text" placeholder="Enter city name" spellcheck="false">
             <button>
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png">
+                <img src="images/search.png">
             </button>
         </div>
 
         <div class="weather">
-            <img src="" class="weather-icon">
+            <img src="images/clear.png" class="weather-icon">
             <h1 class="temp">--°C</h1>
             <h2 class="city">City</h2>
 
             <div class="details">
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/4148/4148460.png">
+                    <img src="images/humidity.png">
                     <div>
                         <p class="humidity">--%</p>
                         <p>Humidity</p>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png">
+                    <img src="images/wind.png">
                     <div>
                         <p class="wind">-- km/h</p>
                         <p>Wind Speed</p>
@@ -46,31 +46,42 @@
     <script>
         const apiKey = "8e2a03303c17e732b930dafddc645978";
         const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-
         const searchBox = document.querySelector(".search input");
         const searchBtn = document.querySelector(".search button");
+        const weatherIcon = document.querySelector(".weather-icon");
 
         async function checkWeather(city) {
-            try {
-                const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-                const data = await response.json();
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+            const data = await response.json();
 
-                if (data.cod !== 200) {
-                    alert("Error: " + data.message);
-                    return;
-                }
+            if (data.cod !== 200) {
+                alert("City not found");
+                return;
+            }
 
-                document.querySelector(".city").innerHTML = data.name;
-                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
-                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-                document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
-                // Dynamic weather icon
-                document.querySelector(".weather-icon").src =
-                    "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
-
-            } catch (error) {
-                console.log("Error:", error);
+            // Change weather icon based on condition
+            if (data.weather[0].main === "Clouds") {
+                weatherIcon.src = "images/clouds.png";
+            }
+            else if (data.weather[0].main === "Clear") {
+                weatherIcon.src = "images/clear.png";
+            }
+            else if (data.weather[0].main === "Rain") {
+                weatherIcon.src = "images/rain.png";
+            }
+            else if (data.weather[0].main === "Drizzle") {
+                weatherIcon.src = "images/drizzle.png";
+            }
+            else if (data.weather[0].main === "Mist") {
+                weatherIcon.src = "images/mist.png";
+            }
+            else if (data.weather[0].main === "Snow") {
+                weatherIcon.src = "images/snow.png";
             }
         }
 
@@ -83,6 +94,7 @@
                 checkWeather(searchBox.value);
             }
         });
+
     </script>
 
 </body>
